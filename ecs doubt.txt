@@ -1,0 +1,37 @@
+# The task-execution role is the  IAM ROLE   that executes ECS actions such as pulling the image and storing the application logs in cloudwatch.
+
+# The TaskRole then, is the IAM role used by the task itself. For example, if your container wants to call other AWS services like S3, SQS, ALB, etc then those permissions would need to be covered by the TaskRole.
+
+
+ecs-exec==aws ecs list-tasks --region us-west-2 --cluster modulelabelname
+
+** aws ecs execute-command --region us-west-2 --cluster modulelabelname  --task arn:aws:ecs:us-west-2:292090429255:task/modulelabelname/50d6b406137a4402bfd51bb5d19e3942 --container my --command "/bin/bash" --interactive
+## ssm permission
+=============
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+=====================================================================
+ecs exec checker ====  git clone https://github.com/aws-containers/amazon-ecs-exec-checker.git 
+
+
+checker cmd ======= # ./check-ecs-exec.sh {cluster}modulelabelname  {task}7cff23321b9f408f8dfdcaef1e0e6f4c
+
+
+ container_definitions = jsonencode([
+    {
+      "repositoryCredentials" : {
+        "credentialsParameter" : aws_secretsmanager_secret.docker_registry_secret.arn
+      }
